@@ -8,15 +8,9 @@ In this exercise, we will:
 
 The project structure is as follows:
 
-Linear_Search_Implementation/
-│
-├── src/
-│   ├── unconstrained_min.py
-│   └── utils.py
-│
-└── tests/
-    ├── test_unconstrained_min.py
-    └── examples.py
+![image](https://github.com/user-attachments/assets/e0ee07af-4f29-4b75-b695-1089fd06fcc7)
+
+
 
 
 
