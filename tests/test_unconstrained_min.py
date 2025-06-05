@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from src.unconstrained_min import minimize_function
 from src.utils import plot_contour_lines, plot_convergence, get_plot_limits, print_final_result
-from tests.examples22 import RESULTS_
+from tests.examples import RESULTS_
 
 
 class TestUnconstrainedMinimization(unittest.TestCase):
