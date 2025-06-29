@@ -3,19 +3,10 @@ Update June 30:
 As an extension implementation, we will implement an interior point method solver for small constrained optimization problems.  
 
 Updated project structure:
- 
-Linear_Search_Implementation/
-│
-├── src/
-│   ├── unconstrained_min.py     # Core unconstrained optimization algorithms
-│   ├── constrained_min.py       # NEW: Constrained optimization algorithms
-│   └── utils.py                 # Plotting and helper functions
-│
-└── tests/
-    ├── test_unconstrained_min.py  # Unit tests for unconstrained optimization
-    ├── test_constrained_min.py    # NEW: Tests for constrained optimization
-    └── examples.py                # Objective functions (linear, quadratic, etc.)
+![image](https://github.com/user-attachments/assets/e2872a13-7368-4e2d-bf72-b2e9997f0e51)
 
+
+June 2nd:
 In this exercise, we will:
 
 • Implement Line Search minimization with several methods. 
