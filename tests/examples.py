@@ -1,6 +1,153 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+## Update June 30
+
+np.seterr(all='ignore') # Ignores all floating-point errors and warnings
+
+# Quadratic Programming Problem Functions
+def qp_objective(x, compute_grad_hess=True):
+    """
+    Objective: x^2 + y^2 + (z+1)^2
+    """
+    f = x[0] ** 2 + x[1] ** 2 + (x[2] + 1) ** 2
+
+    if not compute_grad_hess:
+        return f, None, None
+
+    grad = np.array([2 * x[0], 2 * x[1], 2 * (x[2] + 1)])
+    hess = np.array([[2, 0, 0],
+                     [0, 2, 0],
+                     [0, 0, 2]])
+
+    return f, grad, hess
 
 
+def qp_ineq_constraint_x(x, compute_grad_hess=True):
+    """Inequality constraint: x >= 0"""
+    g = x[0]
+
+    if not compute_grad_hess:
+        return g, None, None
+
+    grad = np.array([1, 0, 0])
+    hess = np.zeros((3, 3))
+
+    return g, grad, hess
+
+
+def qp_ineq_constraint_y(x, compute_grad_hess=True):
+    """Inequality constraint: y >= 0"""
+    g = x[1]
+
+    if not compute_grad_hess:
+        return g, None, None
+
+    grad = np.array([0, 1, 0])
+    hess = np.zeros((3, 3))
+
+    return g, grad, hess
+
+
+def qp_ineq_constraint_z(x, compute_grad_hess=True):
+    """Inequality constraint: z >= 0"""
+    g = x[2]
+
+    if not compute_grad_hess:
+        return g, None, None
+
+    grad = np.array([0, 0, 1])
+    hess = np.zeros((3, 3))
+
+    return g, grad, hess
+
+
+# QP problem data
+qp_ineq_constraints = [qp_ineq_constraint_x, qp_ineq_constraint_y, qp_ineq_constraint_z]
+qp_eq_constraints_mat = np.array([[1, 1, 1]])  # x + y + z = 1
+qp_eq_constraints_rhs = np.array([1])
+qp_x0 = np.array([0.1, 0.2, 0.7])
+
+
+# Linear Programming Problem Functions
+def lp_objective(x, compute_grad_hess=True):
+    """
+    Objective: -(x + y) for maximization of x + y
+    """
+    f = -(x[0] + x[1])
+
+    if not compute_grad_hess:
+        return f, None, None
+
+    grad = np.array([-1, -1])
+    hess = np.zeros((2, 2))
+
+    return f, grad, hess
+
+
+def lp_ineq_constraint_1(x, compute_grad_hess=True):
+    """Inequality constraint: y >= -x + 1  =>  x + y - 1 >= 0"""
+    g = x[0] + x[1] - 1
+
+    if not compute_grad_hess:
+        return g, None, None
+
+    grad = np.array([1, 1])
+    hess = np.zeros((2, 2))
+
+    return g, grad, hess
+
+
+def lp_ineq_constraint_2(x, compute_grad_hess=True):
+    """Inequality constraint: y <= 1  =>  1 - y >= 0"""
+    g = 1 - x[1]
+
+    if not compute_grad_hess:
+        return g, None, None
+
+    grad = np.array([0, -1])
+    hess = np.zeros((2, 2))
+
+    return g, grad, hess
+
+
+def lp_ineq_constraint_3(x, compute_grad_hess=True):
+    """Inequality constraint: x <= 2  =>  2 - x >= 0"""
+    g = 2 - x[0]
+
+    if not compute_grad_hess:
+        return g, None, None
+
+    grad = np.array([-1, 0])
+    hess = np.zeros((2, 2))
+
+    return g, grad, hess
+
+
+def lp_ineq_constraint_4(x, compute_grad_hess=True):
+    """Inequality constraint: y >= 0"""
+    g = x[1]
+
+    if not compute_grad_hess:
+        return g, None, None
+
+    grad = np.array([0, 1])
+    hess = np.zeros((2, 2))
+
+    return g, grad, hess
+
+
+# LP problem data
+lp_ineq_constraints = [lp_ineq_constraint_1, lp_ineq_constraint_2,
+                       lp_ineq_constraint_3, lp_ineq_constraint_4]
+lp_eq_constraints_mat = None
+lp_eq_constraints_rhs = None
+lp_x0 = np.array([0.5, 0.75])
+
+
+
+## June 2
 def example1(x, need_hessian=False):
     """
     Contour lines are circles
