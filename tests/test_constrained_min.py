@@ -52,20 +52,13 @@ class TestConstrainedMin(unittest.TestCase):
         self.assertGreaterEqual(x_opt[1], -1e-6, f"y >= 0 violated: y = {x_opt[1]}")
         self.assertGreaterEqual(x_opt[2], -1e-6, f"z >= 0 violated: z = {x_opt[2]}")
 
-        # # The theoretical solution should be close to (0, 0, 1)
-        # # since we're minimizing distance to (0, 0, -1) subject to being on probability simplex
-        # expected_solution = np.array([0.0, 0.0, 1.0])
-        # solution_error = np.linalg.norm(x_opt - expected_solution)
-        # # self.assertLess(solution_error, 0.1, f"Solution should be close to (0,0,1), got {x_opt}")
-
         print(">> Optimization converged")
-
-
         # Plot results
         plot_qp_results(path, obj_values, x_opt, f_opt)
         print("=" * 50)
         print()
 
+  
     def test_lp(self):
         """Test linear programming problem"""
         # print("\n" + "=" * 50)
@@ -102,16 +95,7 @@ class TestConstrainedMin(unittest.TestCase):
         # y >= 0
         self.assertGreaterEqual(x_opt[1], -1e-6, f"y >= 0 violated: y = {x_opt[1]}")
 
-        # # The theoretical solution should be at the vertex (1, 1) or (2, 0)
-        # # Actually, the maximum is at (1, 1) with objective value 2
-        # actual_obj = x_opt[0] + x_opt[1]
-        # # self.assertGreater(actual_obj, 1.8, f"Objective value should be close to 2, got {actual_obj}")
-
         print(">> Optimization converged")
-        # print(f"✓ Optimization converged successfully")
-        # print(f"✓ Solution satisfies all constraints")
-        # print(f"✓ Solution achieves good objective value")
-
         # Plot results
         plot_lp_results(path, obj_values, x_opt, f_opt)
         print("=" * 50)
