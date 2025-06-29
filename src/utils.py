@@ -1,7 +1,127 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+## June 30: Constrained line search plotting functions
+## PLot the resutls
+def plot_qp_results(path, obj_values, x_opt, f_opt):
+    """Plot results for QP problem"""
+    path = np.array(path)
 
+    # First plot: 3D feasible region and central path
+    fig = plt.figure(figsize=(12, 5))
+
+    # 3D plot
+    ax1 = fig.add_subplot(121, projection='3d')
+
+    # Plot feasible region (triangle)
+    vertices = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0]])
+    ax1.plot(vertices[:, 0], vertices[:, 1], vertices[:, 2], 'k-', linewidth=2, label='Feasible region')
+
+    # Fill the triangle
+    triangle = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    ax1.plot_trisurf(triangle[:, 0], triangle[:, 1], triangle[:, 2], alpha=0.3, color='orange')
+
+    # Plot central path
+    ax1.plot(path[:, 0], path[:, 1], path[:, 2], 'ro-', linewidth=2, markersize=6, label='Central path')
+
+    # Plot final solution
+    ax1.scatter([x_opt[0]], [x_opt[1]], [x_opt[2]], color='red', s=100,
+                label=f'Solution: ({x_opt[0]:.3f}, {x_opt[1]:.3f}, {x_opt[2]:.3f})')
+
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.set_zlabel('z')
+    ax1.set_title('QP: Feasible Region and Central Path')
+    ax1.legend(loc='upper right')
+
+    # Second plot: objective vs iteration
+    ax2 = fig.add_subplot(122)
+    ax2.plot(range(len(obj_values)), obj_values, 'bo-', linewidth=2, markersize=6)
+    ax2.set_xlabel('Outer Iteration')
+    ax2.set_ylabel('Objective Value')
+    ax2.set_title('QP: Objective Value vs Iteration')
+    ax2.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+    # Print results
+    print(f"QP Final Results:")
+    print(f"Optimal point: x = {x_opt[0]:.6f}, y = {x_opt[1]:.6f}, z = {x_opt[2]:.6f}")
+    print(f"Optimal objective value: {f_opt:.6f}")
+    print(f"Equality constraint (x+y+z=1): {np.sum(x_opt):.6f}")
+    print(f"Inequality constraints: x={x_opt[0]:.6f} >= 0, y={x_opt[1]:.6f} >= 0, z={x_opt[2]:.6f} >= 0")
+
+
+def plot_lp_results(path, obj_values, x_opt, f_opt):
+    """Plot results for LP problem"""
+    path = np.array(path)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+    # First plot: 2D feasible region and central path
+    x_vals = np.linspace(-0.5, 2.5, 100)
+
+    # Plot constraints
+    # y >= -x + 1
+    y1 = -x_vals + 1
+    ax1.plot(x_vals, y1, 'g-', label='y = -x + 1')
+
+    # y <= 1
+    ax1.axhline(y=1, color='b', linestyle='-', label='y = 1')
+
+    # x <= 2
+    ax1.axvline(x=2, color='r', linestyle='-', label='x = 2')
+
+    # y >= 0
+    ax1.axhline(y=0, color='m', linestyle='-', label='y = 0')
+
+    # Fill feasible region
+    vertices = np.array([[0,1], [1,0], [2,0], [2,1]])
+
+    ax1.fill(vertices[:, 0], vertices[:, 1], alpha=0.3, color='orange', label='Feasible region')
+
+    # Plot central path
+    ax1.plot(path[:, 0], path[:, 1], 'ro-', linewidth=2, markersize=6, label='Central path')
+
+    # Plot final solution
+    ax1.scatter([x_opt[0]], [x_opt[1]], color='red', s=100,
+                label=f'Solution: ({x_opt[0]:.3f}, {x_opt[1]:.3f})')
+
+    ax1.set_xlabel('x')
+    ax1.set_ylabel('y')
+    ax1.set_title('LP: Feasible Region and Central Path')
+    ax1.legend(loc='lower left')
+    ax1.grid(True)
+    ax1.set_xlim(-0.5, 2.5)
+    ax1.set_ylim(-0.5, 1.5)
+
+    # Second plot: objective vs iteration
+    # Convert back to maximization for plotting
+    max_obj_values = [-val for val in obj_values]
+    ax2.plot(range(len(max_obj_values)), max_obj_values, 'bo-', linewidth=2, markersize=6)
+    ax2.set_xlabel('Outer Iteration')
+    ax2.set_ylabel('Objective Value (x + y)')
+    ax2.set_title('LP: Objective Value vs Iteration')
+    ax2.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+    # Print results
+    actual_obj = x_opt[0] + x_opt[1]  # For maximization
+    print(f"\nLP Final Results:")
+    print(f"Optimal point: x = {x_opt[0]:.6f}, y = {x_opt[1]:.6f}")
+    print(f"Optimal objective value (x + y): {actual_obj:.6f}")
+    print(f"Constraint values:")
+    print(f"Condition  y >= -x + 1: {x_opt[1]:.6f} >= {-x_opt[0] + 1:.6f} satisfied")
+    print(f"Condition  y >= 0: {x_opt[1]:.6f} >= 0 satisfied")
+    print(f"Condition  y <= 1: {x_opt[1]:.6f} <= 1 satisfied")
+    print(f"Condition  x <= 2: {x_opt[0]:.6f} <= 2 satisfied")
+
+
+
+# June 2: Unconstrained line search plotting functions
 def plot_contour_lines(func, xlim, ylim, paths=None, method_names=None,
                              title="Contour Line", levels=20):
     """
