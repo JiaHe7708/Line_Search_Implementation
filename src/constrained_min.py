@@ -1,10 +1,15 @@
 import numpy as np
 from scipy.optimize import minimize
 from scipy.linalg import solve
+import warnings
+# from scipy.linalg import LinAlgWarning
+# ignore warning
+warnings.filterwarnings("ignore", category=LinAlgWarning)
 
+np.seterr(all='ignore') # Ignores all floating-point errors and warnings
 
-def interior_pt(func, ineq_constraints, eq_constraints_mat, eq_constraints_rho, x0,
-                t0=1.0, mu=10.0, tolerance=1e-8, max_iter=100):
+def interior_pt(func, ineq_constraints, eq_constraints_mat, eq_constraints_rhs, x0,
+                t0=1.0, mu=10.0, tolerance=1e-10, max_iter=100):
     """
     Interior point method for constrained optimization using log-barrier method.
 
@@ -34,12 +39,12 @@ def interior_pt(func, ineq_constraints, eq_constraints_mat, eq_constraints_rho, 
 
     # Check if we have equality constraints
     has_eq_constraints = (eq_constraints_mat is not None and
-                          eq_constraints_rho is not None and
+                          eq_constraints_rhs is not None and
                           eq_constraints_mat.size > 0)
 
     if has_eq_constraints:
         eq_constraints_mat = np.array(eq_constraints_mat)
-        eq_constraints_rhs = np.array(eq_constraints_rho)
+        eq_constraints_rhs = np.array(eq_constraints_rhs)
 
     for outer_iter in range(max_iter):
         # Define barrier function
@@ -72,7 +77,7 @@ def interior_pt(func, ineq_constraints, eq_constraints_mat, eq_constraints_rho, 
 
         # Solve barrier problem using Newton's method with equality constraints
         x_new = solve_barrier_problem(x, barrier_func, eq_constraints_mat,
-                                      eq_constraints_rho if has_eq_constraints else None)
+                                      eq_constraints_rhs if has_eq_constraints else None)
 
         # Store results
         f_val, _, _ = func(x_new, True)
@@ -92,7 +97,7 @@ def interior_pt(func, ineq_constraints, eq_constraints_mat, eq_constraints_rho, 
 
 
 def solve_barrier_problem(x0, barrier_func, eq_mat=None, eq_rhs=None,
-                          tolerance=1e-12, max_iter=100):
+                          tolerance=1e-10, max_iter=100):
     """
     Solve the barrier subproblem using Newton's method with equality constraints.
     """
