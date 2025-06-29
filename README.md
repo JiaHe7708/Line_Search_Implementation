@@ -4,7 +4,7 @@ As an extension implementation, we will implement an interior point method solve
 
 Updated project structure:
 
-![image](https://github.com/user-attachments/assets/e2872a13-7368-4e2d-bf72-b2e9997f0e51)
+![image](https://github.com/user-attachments/assets/89888902-1949-4f65-ab5e-2d34e48f601f)
 
 
 =========================================================================
